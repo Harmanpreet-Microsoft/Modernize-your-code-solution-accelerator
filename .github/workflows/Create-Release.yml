@@ -9,7 +9,7 @@ permissions:
 
 name: Create-Release
  
- jobs:
+jobs:
    create-release:
      runs-on: ubuntu-latest
      steps:
