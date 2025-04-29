@@ -204,12 +204,6 @@ export const useStyles = makeStyles({
     color: "inherit",
     textAlign: "center",
   },
-  errorContentScrollable: {
-    maxHeight: '450px',
-    overflowY: 'auto',
-    paddingRight: '8px',
-    borderBottom: '1px solid #eaeaea'
-  },
   errorContent: {
     backgroundColor: "#F8DADB",
     marginBottom: "16px",

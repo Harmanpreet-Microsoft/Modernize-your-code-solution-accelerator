@@ -6,7 +6,7 @@ import "./fileError.scss";
 
 export const FileError = (props) => {
   const {batchSummary, expandedSections, setExpandedSections, styles}=props;
-  const isExpanded = expandedSections.includes("errors");
+  const isExpanded = expandedSections?.includes("errors");
 
   return (
     <>

@@ -123,7 +123,7 @@ const ModernizationPage = () => {
 
   const [selectedFileId, setSelectedFileId] = React.useState<string>("");
   const [fileId, setFileId] = React.useState<string>("");
-  const [expandedSections, setExpandedSections] = React.useState<string[]>([]);
+  const [expandedSections, setExpandedSections] = useState(["errors"]);
   const [progressPercentage, setProgressPercentage] = useState(0);
   const [allFilesCompleted, setAllFilesCompleted] = useState(false);
   const [isZipButtonDisabled, setIsZipButtonDisabled] = useState(true);
@@ -896,26 +896,13 @@ const ModernizationPage = () => {
                   </Text>
                 </Card>
               ) : null}
-              <Card className={styles.errorSection}>
-                <div
-                  className={styles.sectionHeader}
-                  onClick={() =>
-                    setExpandedSections((prev) =>
-                      prev.includes("errors")
-                        ? prev.filter((id) => id !== "errors")
-                        : [...prev, "errors"]
-                    )
-                  }
-                >
-                  <Text weight="semibold">Errors ({errorCount})</Text>
-                  {expandedSections.includes("errors") ? (
-                    <ChevronDown16Filled />
-                  ) : (
-                    <ChevronRight16Regular />
-                  )}
-                </div>
-              </Card>
-              {<FileError batchSummary={batchSummary} />}
+
+              <FileError 
+                batchSummary={batchSummary} 
+                expandedSections={expandedSections}
+                setExpandedSections={setExpandedSections}
+                styles={styles}
+              />
             </div>
           </>
         );
