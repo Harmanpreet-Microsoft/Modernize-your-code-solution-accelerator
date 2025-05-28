@@ -2,29 +2,30 @@
 
 By default this template will use the environment name as the prefix to prevent naming collisions within Azure. The parameters below show the default values. You only need to run the statements below if you need to change the values. 
 
+> To override any of the parameters, run `azd env set <key> <value>` before running `azd up`. On the first azd command, it will prompt you for the environment name. Be sure to choose 3-20 characters alphanumeric unique name. 
 
-> To override any of the parameters, run `azd env set <key> <value>` before running `azd up`. On the first azd command, it will prompt you for the environment name. Be sure to choose 3-20 charaters alphanumeric unique name. 
+## Parameters
 
-Change the Content Understanding Location (allowed values: Sweden Central, Australia East)
+| Name                                      | Type    | Default Value | Purpose                                                                                 |
+|-------------------------------------------|---------|----------------|-----------------------------------------------------------------------------------------|
+| `AZURE_ENV_NAME`                         | string  | `azdtemp`      | Used as a prefix for all resource names to ensure uniqueness across environments.       |
+| `AZURE_LOCATION`                         | string  | `japaneast`    | Location of the Azure resources. Controls where the infrastructure will be deployed.    |
+| `AZURE_ENV_MODEL_DEPLOYMENT_TYPE` (Deprecated) | string  | `GlobalStandard`     | Change the Model Deployment Type (allowed values: Standard, GlobalStandard) |
+| `AZURE_ENV_MODEL_NAME`                   | string  | `gpt-4o`        | Set the Model Name (allowed values: gpt-4o)                 |
+| `AZURE_ENV_MODEL_CAPACITY`               | integer | `200`           | Change the Model Capacity (choose a number based on available GPT model capacity in your subscription)    |
 
-```shell
-azd env set AZURE_ENV_CU_LOCATION 'swedencentral'
+---
+
+## How to Set a Parameter
+
+To customize any of the above values, run the following command **before** `azd up`:
+
+```bash
+azd env set <PARAMETER_NAME> <VALUE>
 ```
 
-Change the Model Deployment Type (allowed values: Standard, GlobalStandard)
+**Example:**
 
-```shell
-azd env set AZURE_ENV_MODEL_DEPLOYMENT_TYPE GlobalStandard
-```
-
-Set the Model Name (allowed values: gpt-4o-mini, gpt-4o, gpt-4)
-
-```shell
-azd env set AZURE_ENV_MODEL_NAME gpt-4o-mini
-```
-
-Change the Model Capacity (choose a number based on available GPT model capacity in your subscription)
-
-```shell
-azd env set AZURE_ENV_MODEL_CAPACITY 30
+```bash
+azd env set AZURE_LOCATION westus2
 ```

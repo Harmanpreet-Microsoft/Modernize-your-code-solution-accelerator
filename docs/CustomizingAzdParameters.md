@@ -13,21 +13,20 @@ Change the Azure Content Understanding Service Location (example: eastus2, westu
 ```shell
 azd env set AZURE_LOCATION 'japaneast'
 ```
-
-Change the Model Deployment Type (allowed values: Standard, GlobalStandard)
-
-```shell
-azd env set AZURE_ENV_MODEL_DEPLOYMENT_TYPE Standard
-```
-
-Set the Model Name (allowed values: gpt-4)
-
-```shell
-azd env set AZURE_ENV_MODEL_NAME gpt-4
-```
-
 Change the Model Capacity (choose a number based on available GPT model capacity in your subscription)
 
 ```shell
 azd env set AZURE_ENV_MODEL_CAPACITY 200
+```
+
+Change the Model Deployment Type (allowed values: Standard, GlobalStandard)
+
+```shell
+azd env set AZURE_ENV_MODEL_DEPLOYMENT_TYPE 'GlobalStandard'
+```
+
+Set the Model Name (allowed values: gpt-4o)
+
+```shell
+azd env set AZURE_ENV_MODEL_NAME 'gpt-4o'
 ```

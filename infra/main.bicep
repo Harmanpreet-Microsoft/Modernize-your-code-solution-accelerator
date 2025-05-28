@@ -32,6 +32,9 @@ var safePrefix = length(Prefix) > 20 ? substring(Prefix, 0, 20) : Prefix
 @description('Location for all Ai services resources. This location can be different from the resource group location.')
 param AzureAiServiceLocation string  // The location used for all deployed resources.  This location must be in the same region as the resource group.
 param capacity int = 5
+param deploymentType  = 'GlobalStandard'
+param llmModel  = 'gpt-4o'
+
 
 var uniqueId = toLower(uniqueString(subscription().id, safePrefix, resourceGroup().location))
 var UniquePrefix = 'cm${padLeft(take(uniqueId, 12), 12, '0')}'
@@ -43,9 +46,7 @@ var cosmosdbDatabase  = 'cmsadb'
 var cosmosdbBatchContainer  = 'cmsabatch'
 var cosmosdbFileContainer  = 'cmsafile'
 var cosmosdbLogContainer  = 'cmsalog'
-var deploymentType  = 'GlobalStandard'
 var containerName  = 'appstorage'
-var llmModel  = 'gpt-4o'
 var storageSkuName = 'Standard_LRS'
 var storageContainerName = replace(replace(replace(replace('${ResourcePrefix}cast', '-', ''), '_', ''), '.', ''),'/', '')
 var gptModelVersion = '2024-08-06'
