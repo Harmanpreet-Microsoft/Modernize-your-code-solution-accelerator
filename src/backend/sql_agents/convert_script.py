@@ -44,6 +44,7 @@ logger.setLevel(logging.DEBUG)
 # Constant prefix for sensitive content-related errors
 CONTENT_SAFETY_PREFIX = "Sensitive or harmful content detected"
 
+
 def is_content_safety_error(error: Exception) -> bool:
     """Check if an error is related to content safety filters"""
     error_str = str(error).lower()
@@ -59,6 +60,7 @@ def is_content_safety_error(error: Exception) -> bool:
         'content violation'
     ]
     return any(indicator in error_str for indicator in error_indicators)
+
 
 def has_harmful_content(content: str) -> bool:
     """Check if content contains harmful indicators"""
@@ -82,11 +84,13 @@ def has_harmful_content(content: str) -> bool:
     ]
     return any(term in content.lower() for term in harmful_indicators)
 
+
 def prefix_if_harmful(content: str) -> str:
     """Add prefix to content if it contains harmful indicators"""
     if has_harmful_content(content):
         return f"{CONTENT_SAFETY_PREFIX}: {content}"
     return content
+
 
 async def handle_content_safety_error(
     error: Exception,
@@ -96,7 +100,6 @@ async def handle_content_safety_error(
     agent_type: AgentType = AgentType.ALL
 ) -> None:
     """Handle content safety errors consistently"""
-
     logger.warning(f"Content safety filter triggered for file {file.file_id}: {str(error)}")
 
     error_message = f"{CONTENT_SAFETY_PREFIX}: {str(error)}"
