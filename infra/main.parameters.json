@@ -65,6 +65,16 @@
             "name": "GlobalStandard",
             "capacity": 50
           }
+        },
+        {
+          "name": "embedding",
+          "model": {
+            "name": "text-embedding-ada-002"
+          },
+          "sku": {
+            "name": "Standard",
+            "capacity": 80
+          }
         }
       ]
     }
