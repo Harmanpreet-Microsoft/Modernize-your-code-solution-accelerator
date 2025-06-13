@@ -92,29 +92,36 @@ fi
 az account set --subscription "$SUBSCRIPTION_ID"
 echo "🎯 Active Subscription: $(az account show --query '[name, id]' --output tsv)"
 
-quotaAvailable=true
+MODEL_NAMES=()
+MODEL_TYPES=()
+MODEL_CAPACITIES=()
 
 while IFS= read -r deployment; do
-  name=${AZURE_ENV_MODEL_NAME:-$(echo "$deployment" | jq -r '.name')}
-  model=${AZURE_ENV_MODEL_NAME:-$(echo "$deployment" | jq -r '.model.name')}
-  type=${AZURE_ENV_MODEL_DEPLOYMENT_TYPE:-$(echo "$deployment" | jq -r '.sku.name')}
-  capacity=${AZURE_ENV_MODEL_CAPACITY:-$(echo "$deployment" | jq -r '.sku.capacity')}
+  name=$(echo "$deployment" | jq -r '.name')
+  model=$(echo "$deployment" | jq -r '.model.name')
+  type=$(echo "$deployment" | jq -r '.sku.name')
+  capacity=$(echo "$deployment" | jq -r '.sku.capacity')
 
-  echo ""
-  echo "🔍 Validating model deployment: $name ..."
-  ./scripts/validate_model_quota.sh --location "$LOCATION" --model "$model" --capacity "$capacity" --deployment-type "$type"
-  exit_code=$?
-
-  if [[ $exit_code -ne 0 ]]; then
-    if [[ $exit_code -eq 2 ]]; then
-      exit 1
-    fi
-    echo "❌ ERROR: Quota validation failed for model deployment: $name"
-    quotaAvailable=false
-  fi
+  MODEL_NAMES+=("$model")
+  MODEL_TYPES+=("$type")
+  MODEL_CAPACITIES+=("$capacity")
 done <<< "$(echo "$aiModelDeployments")"
 
-if [[ "$quotaAvailable" = false ]]; then
+# Convert arrays to comma-separated values
+MODELS_CSV=$(IFS=','; echo "${MODEL_NAMES[*]}")
+TYPES_CSV=$(IFS=','; echo "${MODEL_TYPES[*]}")
+CAPACITIES_CSV=$(IFS=','; echo "${MODEL_CAPACITIES[*]}")
+
+echo ""
+echo "🔍 Validating model deployment: ${MODEL_NAMES[*]} ..."
+./scripts/validate_model_quota.sh \
+  --location "$LOCATION" \
+  --models "$MODELS_CSV" \
+  --capacities "$CAPACITIES_CSV" \
+  --types "$TYPES_CSV"
+
+exit_code=$?
+if [[ $exit_code -ne 0 ]]; then
   echo "❌ ERROR: One or more model deployments failed quota validation."
   exit 1
 else
