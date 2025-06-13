@@ -101,6 +101,38 @@ check_all_models_in_region() {
   fi
 }
 
+# -------------------- Print Detailed Shortage --------------------
+print_insufficient_details_for_region() {
+  local region="$1"
+
+  echo -e "\n⚠️  Insufficient quota in '$region':"
+
+  local index=1
+  while IFS= read -r model_entry; do
+    model=$(echo "$model_entry" | jq -r '.model.name')
+    type=$(echo "$model_entry" | jq -r '.sku.name')
+    capacity=$(echo "$model_entry" | jq -r '.sku.capacity')
+    model_type="OpenAI.$type.$model"
+
+    usage=$(az cognitiveservices usage list --location "$region" \
+      --query "[?name.value=='$model_type']" --output json 2>/dev/null)
+
+    if [[ -z "$usage" || "$usage" == "[]" ]]; then
+      echo "    - $model: ❌ No usage data found"
+    else
+      current=$(echo "$usage" | jq -r '.[0].currentValue // 0' | cut -d'.' -f1)
+      limit=$(echo "$usage" | jq -r '.[0].limit // 0' | cut -d'.' -f1)
+      available=$((limit - current))
+      echo "    - $model (Available :$available, Required : $capacity)"
+    fi
+
+    ((index++))
+  done <<< "$MODEL_LIST"
+
+  echo "➡️  Checking fallback regions..."
+}
+
+
 # -------------------- Prompt User --------------------
 ask_for_location() {
   echo -e "\nPlease enter any other location from the above table where you want to deploy AI Services:"
@@ -136,7 +168,7 @@ if [[ $? -eq 0 ]]; then
   azd env set AZURE_AISERVICE_LOCATION "$LOCATION"
   exit 0
 else
-  echo -e "\n⚠️  Insufficient quota in '$LOCATION'. Checking fallback regions..."
+  print_insufficient_details_for_region "$LOCATION"
 fi
 
 # -------------------- Check Fallback Regions --------------------
