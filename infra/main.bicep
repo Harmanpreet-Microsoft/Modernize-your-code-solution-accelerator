@@ -475,20 +475,22 @@ resource aiDeveloper 'Microsoft.Authorization/roleDefinitions@2022-04-01' existi
   name: '64702f94-c441-49e6-a78b-ef80e0188fee'
 }
 
-param aiServicesName string
+// var aiServicesName string=azureAifoundry.outputs.aiFoundryName
+// var aiProjectName string=azureAifoundry.outputs.aiProjectName
 
-resource aiServices 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' existing = {
-  name: azureAifoundry.outputs.aiFoundryName
-}
 
-resource aiProject 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-preview' existing = {
-  parent: aiServices
+// resource aiServices 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' existing= {
+//   name: azureAifoundry.outputs.aiFoundryName
+// }
+
+resource aiProject 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-preview' existing= {
   name: azureAifoundry.outputs.aiProjectName
 }
 
+
 resource aiDeveloperAccessProj 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(containerAppBackend.name, aiProject.id, aiDeveloper.id)
-  scope: aiProject
+  name: guid(containerAppBackend.name, aiDeveloper.id)
+  scope: resourceGroup()
   properties: {
     roleDefinitionId: aiDeveloper.id
     principalId: containerAppBackend.identity.principalId
@@ -501,8 +503,8 @@ resource aiUser 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = 
 }
 
 resource aiUserAccessProj 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(containerAppBackend.name, aiProject.id, aiUser.id)
-  scope: aiProject
+  name: guid(containerAppBackend.name, aiUser.id)
+  scope: resourceGroup()
   properties: {
     roleDefinitionId: aiUser.id
     principalId: containerAppBackend.identity.principalId
@@ -510,8 +512,8 @@ resource aiUserAccessProj 'Microsoft.Authorization/roleAssignments@2022-04-01' =
 }
 
 resource aiUserAccessFoundry 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(containerAppBackend.name, aiServices.id, aiUser.id)
-  scope: aiProject
+  name: guid(containerAppBackend.name, aiProject.id)
+  scope: resourceGroup()
   properties: {
     roleDefinitionId: aiUser.id
     principalId: containerAppBackend.identity.principalId
