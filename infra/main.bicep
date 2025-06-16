@@ -323,7 +323,7 @@ resource containerAppBackend 'Microsoft.App/containerApps@2023-05-01' = {
             }
             {
               name: 'AZURE_OPENAI_ENDPOINT'
-              value: 'https://${azureAifoundry.outputs.aiServicesName}.openai.azure.com/'
+              value: 'https://${azureAifoundry.outputs.aiFoundryName}.openai.azure.com/'
             }
             {
               name: 'MIGRATOR_AGENT_MODEL_DEPLOY'
